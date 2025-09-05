@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chúc mừng 20/10</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, #0b1220, #05080f);
+      overflow: hidden;
+      font-family: 'Dancing Script', cursive;
+      color: white;
+    }
+
+    #startBtn {
+      padding: 20px 38px;
+      font-size: 30px;
+      font-weight: bold;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      background: linear-gradient(45deg, #ff4d6d, #ff9bd1);
+      color: white;
+      box-shadow: 0 12px 28px rgba(255,77,109,.8);
+      transition: transform .2s;
+      z-index: 3;
+    }
+    #startBtn:hover { transform: scale(1.2); }
+
+    .messages {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: 70px;
+      line-height: 1.6;
+      width: 95%;
+      max-width: 1000px;
+      z-index: 2;
+      perspective: 1600px;
+    }
+
+    .line {
+      display: block;
+      margin: 16px 0;
+      opacity: 0;
+      background: linear-gradient(90deg, #ff4d6d, #ffd1e8, #ff9bd1, #ff7aa2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 25px rgba(255, 150, 200, 1), 0 0 40px rgba(255, 100, 180, .9);
+      animation: fadeInOut 4s forwards, wave 3s infinite ease-in-out;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(30px) scale(0.9); }
+      20% { opacity: 1; transform: translateY(0) scale(1); }
+      80% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: translateY(0) scale(1); }
+      25% { transform: translateY(-10px) scale(1.05); }
+      50% { transform: translateY(5px) scale(0.98); }
+      75% { transform: translateY(-6px) scale(1.02); }
+    }
+
+    .heart {
+      position: absolute;
+      width: 20px; height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: rise linear forwards;
+      opacity: 0.9;
+      filter: drop-shadow(0 0 10px rgba(255,120,180,.9));
+    }
+    .heart:before, .heart:after {
+      content:"";
+      position: absolute;
+      width: 20px; height: 20px;
+      background: inherit;
+      border-radius: 50%;
+    }
+    .heart:before { top: -10px; left: 0; }
+    .heart:after { top: 0; left: -10px; }
+
+    @keyframes rise {
+      0% { transform: translateY(0) rotate(45deg) scale(.7); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translateY(-120vh) rotate(45deg) scale(2); opacity: 0; }
+    }
+
+    .final {
+      font-size: 80px;
+      font-weight: bold;
+      text-align: center;
+      background: linear-gradient(90deg, #ff3366, #ff99cc, #ff66b2, #ffccff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(255,100,180,.9), 0 0 70px rgba(255,150,220,1);
+      opacity: 0;
+      animation: finalShow 3s forwards;
+    }
+    @keyframes finalShow {
+      from { opacity: 0; transform: scale(0.7); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <button id="startBtn">💖 Bấm vào đây 💖</button>
+  <div class="messages" id="messages"></div>
+
+  <!-- Nhạc nền -->
+  <audio id="bgMusic" loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const btn = document.getElementById("startBtn");
+    const messagesDiv = document.getElementById("messages");
+    const bgMusic = document.getElementById("bgMusic");
+
+    const sentences = [
+      "💐 Nhân ngày 20/10, chúc các bạn nữ luôn rạng rỡ 💐",
+      "✨ Mong rằng nụ cười sẽ luôn nở trên môi ✨",
+      "🌸 Hạnh phúc và yêu thương sẽ luôn ở quanh bạn 🌸",
+      "🎓 Và 4 năm đại học thật đẹp, đầy kỷ niệm 🎓"
+    ];
+
+    function spawnHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.bottom = "-30px";
+      const colors = ["#ff4d6d","#ff7aa2","#ff9bd1","#ffd1e8","#ff6fb0","#ff3c8d"];
+      heart.style.background = colors[Math.floor(Math.random()*colors.length)];
+      const size = 18 + Math.random()*35;
+      heart.style.width = size + "px";
+      heart.style.height = size + "px";
+      heart.style.animationDuration = (2.5 + Math.random()*3.5) + "s";
+      document.body.appendChild(heart);
+      setTimeout(()=>heart.remove(), 6000);
+    }
+
+    btn.addEventListener("click", () => {
+      btn.style.display = "none";
+      setInterval(spawnHeart, 100);
+      bgMusic.play();
+
+      let idx = 0;
+      function showNext() {
+        if (idx < sentences.length) {
+          const span = document.createElement("span");
+          span.className = "line";
+          span.textContent = sentences[idx];
+          messagesDiv.innerHTML = "";
+          messagesDiv.appendChild(span);
+          idx++;
+          setTimeout(showNext, 4200);
+        } else {
+          messagesDiv.innerHTML = "";
+          const finalDiv = document.createElement("div");
+          finalDiv.className = "final";
+          finalDiv.textContent = "💖 Chúc các bạn nữ 20/10 vui vẻ và hạnh phúc 💖";
+          messagesDiv.appendChild(finalDiv);
+        }
+      }
+      showNext();
+    });
+
+    // hiệu ứng 3D sâu khi di chuột / vuốt
+    document.addEventListener("mousemove", e => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 65;
+      const y = (e.clientY / window.innerHeight - 0.5) * -65;
+      messagesDiv.style.transform = `translate(-50%, -50%) rotateY(${x}deg) rotateX(${y}deg)`;
+    });
+    document.addEventListener("touchmove", e => {
+      const touch = e.touches[0];
+      const x = (touch.clientX / window.innerWidth - 0.5) * 65;
+      const y = (touch.clientY / window.innerHeight - 0.5) * -65;
+      messagesDiv.style.transform = `translate(-50%, -50%) rotateY(${x}deg) rotateX(${y}deg)`;
+    });
+  </script>
+</body>
+</html>
