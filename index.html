@@ -131,8 +131,8 @@
   <button id="startBtn">💖 Bấm vào đây 💖</button>
   <div class="messages" id="messages"></div>
 
-  <audio id="bgMusic" loop>
-    <source src=" https://files.catbox.moe/zhgrw0.mp3" type="audio/mpeg" preload="auto">
+  <audio id="bgMusic" preload="auto">
+    <source src="https://files.catbox.moe/zhgrw0.mp3" type="audio/mpeg">
   </audio>
 
   <script>
@@ -149,6 +149,9 @@
 
     btn.addEventListener("click", () => {
       btn.style.display = "none";
+
+      // phát nhạc ngay, quay về đầu
+      bgMusic.currentTime = 0;
       bgMusic.play();
 
       // tim bay tạo sẵn 20 cái rồi auto loop
@@ -176,7 +179,6 @@
         } else {
           messagesDiv.innerHTML = "";
 
-          // container vẽ trái tim to hơn
           const heartContainer = document.createElement("div");
           heartContainer.className = "heart-container";
           messagesDiv.appendChild(heartContainer);
@@ -186,7 +188,6 @@
           const draw = setInterval(() => {
             if (i >= dots) {
               clearInterval(draw);
-              // hiện chữ cuối
               const finalText = document.createElement("div");
               finalText.className = "finalText";
               finalText.textContent = "💖 Chúc các bạn nữ 20/10 vui vẻ và hạnh phúc 💖";
@@ -199,8 +200,8 @@
             const dot = document.createElement("div");
             dot.className = "heart-dot";
             dot.textContent = "❤";
-            dot.style.left = 300 + x * 20 + "px"; // to gấp đôi bản trước
-            dot.style.top  = 250 - y * 20 + "px"; // to gấp đôi bản trước
+            dot.style.left = 300 + x * 20 + "px";
+            dot.style.top  = 250 - y * 20 + "px";
             heartContainer.appendChild(dot);
             i++;
           }, 40);
