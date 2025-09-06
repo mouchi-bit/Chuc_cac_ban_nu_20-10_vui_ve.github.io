@@ -15,6 +15,16 @@
       overflow: hidden;
       font-family: 'Dancing Script', cursive;
       color: white;
+      flex-direction: column;
+    }
+
+    #countdown {
+      font-size: 150px;
+      font-weight: bold;
+      color: #ff4d6d;
+      text-shadow: 0 0 30px rgba(255,100,150,0.9);
+      margin-bottom: 30px;
+      font-family: 'Dancing Script', cursive;
     }
 
     #startBtn {
@@ -29,6 +39,7 @@
       box-shadow: 0 12px 28px rgba(255,77,109,.8);
       transition: transform .2s;
       z-index: 3;
+      display: none;
     }
     #startBtn:hover { transform: scale(1.2); }
 
@@ -42,6 +53,7 @@
       width: 95%;
       max-width: 1000px;
       z-index: 2;
+      font-family: 'Dancing Script', cursive;
     }
 
     .line {
@@ -75,6 +87,11 @@
       transform: translate(-50%, -50%);
       width: 600px; height: 500px;
       pointer-events: none;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    .heart-dot, .fly-heart {
+      font-family: 'Dancing Script', cursive;
     }
 
     .heart-dot {
@@ -103,6 +120,7 @@
       text-align: center;
       opacity: 0;
       animation: finalTextShow 2.5s 1s forwards;
+      font-family: 'Dancing Script', cursive;
     }
 
     @keyframes finalTextShow {
@@ -110,7 +128,6 @@
       to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
 
-    /* Tim bay loop */
     .fly-heart {
       position: absolute;
       bottom: -40px;
@@ -119,6 +136,7 @@
       filter: drop-shadow(0 0 10px rgba(255,120,180,.9));
       animation: rise 6s linear infinite;
     }
+
     @keyframes rise {
       0%   { transform: translateY(0) scale(.7); opacity: 0; }
       10%  { opacity: 1; }
@@ -128,24 +146,37 @@
   </style>
 </head>
 <body>
+  <div id="countdown"></div>
   <button id="startBtn">💖 Bấm vào đây 💖</button>
   <div class="messages" id="messages"></div>
 
   <script>
+    const countdownDiv = document.getElementById("countdown");
     const btn = document.getElementById("startBtn");
     const messagesDiv = document.getElementById("messages");
 
-    // preload nhạc bằng JS
+    // preload nhạc
     const bgMusic = new Audio("https://files.catbox.moe/zhgrw0.mp3");
     bgMusic.preload = "auto";
     bgMusic.loop = true;
 
-    // đảm bảo tải xong trước khi click
     let musicLoaded = false;
-    bgMusic.addEventListener("canplaythrough", () => {
-      musicLoaded = true;
-      console.log("Nhạc đã load xong!");
-    });
+    bgMusic.addEventListener("canplaythrough", () => { musicLoaded = true; });
+
+    // map số thành chữ
+    const numWords = ["Không","Một","Hai","Ba","Bốn","Năm"];
+    let timeLeft = 5;
+
+    const countdownInterval = setInterval(() => {
+      if(timeLeft > 0){
+        countdownDiv.textContent = numWords[timeLeft];
+      } else {
+        clearInterval(countdownInterval);
+        countdownDiv.style.display = "none";
+        btn.style.display = "inline-block";
+      }
+      timeLeft--;
+    }, 1000);
 
     const sentences = [
       "💐 Nhân ngày 20/10, chúc các bạn nữ luôn rạng rỡ 💐",
@@ -157,19 +188,11 @@
     btn.addEventListener("click", () => {
       btn.style.display = "none";
 
-      // phát nhạc ngay nếu đã load
-      if (musicLoaded) {
-        bgMusic.currentTime = 0;
-        bgMusic.play();
-      } else {
-        // nếu chưa load xong, đợi load rồi play
-        bgMusic.addEventListener("canplaythrough", () => {
-          bgMusic.currentTime = 0;
-          bgMusic.play();
-        }, { once: true });
+      if (musicLoaded) { bgMusic.currentTime = 0; bgMusic.play(); }
+      else { 
+        bgMusic.addEventListener("canplaythrough", () => { bgMusic.currentTime = 0; bgMusic.play(); }, { once: true });
       }
 
-      // tim bay tạo sẵn 20 cái rồi auto loop
       for (let i = 0; i < 20; i++) {
         const heart = document.createElement("div");
         heart.className = "fly-heart";
@@ -193,7 +216,6 @@
           setTimeout(showNext, 4200);
         } else {
           messagesDiv.innerHTML = "";
-
           const heartContainer = document.createElement("div");
           heartContainer.className = "heart-container";
           messagesDiv.appendChild(heartContainer);
