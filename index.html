@@ -131,14 +131,21 @@
   <button id="startBtn">💖 Bấm vào đây 💖</button>
   <div class="messages" id="messages"></div>
 
-  <audio id="bgMusic" preload="auto">
-    <source src="https://files.catbox.moe/zhgrw0.mp3" type="audio/mpeg">
-  </audio>
-
   <script>
     const btn = document.getElementById("startBtn");
     const messagesDiv = document.getElementById("messages");
-    const bgMusic = document.getElementById("bgMusic");
+
+    // preload nhạc bằng JS
+    const bgMusic = new Audio("https://files.catbox.moe/zhgrw0.mp3");
+    bgMusic.preload = "auto";
+    bgMusic.loop = true;
+
+    // đảm bảo tải xong trước khi click
+    let musicLoaded = false;
+    bgMusic.addEventListener("canplaythrough", () => {
+      musicLoaded = true;
+      console.log("Nhạc đã load xong!");
+    });
 
     const sentences = [
       "💐 Nhân ngày 20/10, chúc các bạn nữ luôn rạng rỡ 💐",
@@ -150,9 +157,17 @@
     btn.addEventListener("click", () => {
       btn.style.display = "none";
 
-      // phát nhạc ngay, quay về đầu
-      bgMusic.currentTime = 0;
-      bgMusic.play();
+      // phát nhạc ngay nếu đã load
+      if (musicLoaded) {
+        bgMusic.currentTime = 0;
+        bgMusic.play();
+      } else {
+        // nếu chưa load xong, đợi load rồi play
+        bgMusic.addEventListener("canplaythrough", () => {
+          bgMusic.currentTime = 0;
+          bgMusic.play();
+        }, { once: true });
+      }
 
       // tim bay tạo sẵn 20 cái rồi auto loop
       for (let i = 0; i < 20; i++) {
